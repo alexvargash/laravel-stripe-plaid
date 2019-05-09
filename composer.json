@@ -1,0 +1,27 @@
+{
+    "name": "alexvargash/laravel-stripe-plaid",
+    "description": "Simple package for retrieving a Stripe token from Plaid token.",
+    "keywords": ["laravel", "laravel stripe", "stripe plaid", "stripe", "plaid"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alex Vargas",
+            "email": "avargas@digizent.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "AlexVargash\\LaravelStripePlaid\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AlexVargash\\LaravelStripePlaid\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.5"
+    }
+}

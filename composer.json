@@ -1,6 +1,6 @@
 {
     "name": "alexvargash/laravel-stripe-plaid",
-    "description": "Simple package for retrieving a Stripe token from Plaid token.",
+    "description": "Simple package for creating a Stripe Bank Account Token from a Plaid token.",
     "keywords": ["laravel", "laravel stripe", "stripe plaid", "stripe", "plaid"],
     "type": "library",
     "license": "MIT",

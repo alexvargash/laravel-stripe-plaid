@@ -30,8 +30,6 @@ class StripePlaid
 		   	'public_token' => $this->keys['public_token'],
 		];
 
-		//var_dump($this->makeHttpRequest($this->exchangeUrl, $params));
-		//return $this->makeHttpRequest($this->exchangeUrl, $params);
 		return $this->makeHttpRequest($this->exchangeUrl, $params)->access_token;
 	}
 

@@ -2,15 +2,23 @@
 
 namespace AlexVargash\LaravelStripePlaid;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
+use AlexVargash\LaravelStripePlaid\Helpers\PlaidKeys;
+use AlexVargash\LaravelStripePlaid\Exceptions\PlaidException;
+
 class StripePlaid
 {
     private $keys;
+    private $client;
     private $exchangeUrl;
     private $accountTokenUrl;
 
-    public function __construct($keys)
+    public function __construct($keys, Client $client = null)
     {
-        $this->keys = $keys;
+        $this->keys = PlaidKeys::validate($keys);
+        $this->client = $client ?: new Client();
         $this->exchangeUrl = "https://{$keys['environment']}.plaid.com/item/public_token/exchange";
         $this->accountTokenUrl = "https://{$keys['environment']}.plaid.com/processor/stripe/bank_account_token/create";
     }
@@ -47,21 +55,20 @@ class StripePlaid
 
     public function makeHttpRequest($url, $params)
     {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 80);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-        if (! $result = curl_exec($ch)) {
-            trigger_error(curl_error($ch));
+        try {
+            $response = $this->client->request('POST', $url, [
+                'headers' => ['Content-Type' => 'application/json'],
+                'connect_timeout' => 30,
+                'timeout' => 80,
+                'body' => json_encode($params)
+            ]);
+        } catch (ClientException $e) {
+            dd($e);
+            throw PlaidException::badRequest($e->getResponse()->getBody());
+        } catch (ServerException $e) {
+            throw PlaidException::badRequest($e->getResponse()->getBody());
         }
-        curl_close($ch);
 
-        return json_decode($result);
+        return json_decode($response->getBody());
     }
 }

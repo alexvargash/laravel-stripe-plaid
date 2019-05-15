@@ -10,44 +10,65 @@ use AlexVargash\LaravelStripePlaid\Exceptions\PlaidException;
 
 class StripePlaid
 {
-    private $keys;
+    private $secret;
+    private $clientId;
     private $client;
+    private $environment;
     private $exchangeUrl;
     private $accountTokenUrl;
 
-    public function __construct($keys, Client $client = null)
+    public function __construct($secret = null, $clientId = null, $environment = null, Client $client = null)
     {
-        $this->keys = PlaidKeys::validate($keys);
         $this->client = $client ?: new Client();
-        $this->exchangeUrl = "https://{$keys['environment']}.plaid.com/item/public_token/exchange";
-        $this->accountTokenUrl = "https://{$keys['environment']}.plaid.com/processor/stripe/bank_account_token/create";
+        $this->secret = $secret ?: config('stripe-plaid.secret');
+        $this->clientId = $clientId ?: config('stripe-plaid.client_id');
+        $this->environment = $environment ?: config('stripe-plaid.environment');
+        $this->exchangeUrl = "https://{$this->environment}.plaid.com/item/public_token/exchange";
+        $this->accountTokenUrl = "https://{$this->environment}.plaid.com/processor/stripe/bank_account_token/create";
+        $this->validateKeys();
     }
 
-    public function getStripeToken()
+    public static function make($secret, $clientId, $environment)
     {
-        $accessToken = $this->exchangePublicToken();
-
-        return $this->createStripeBankAccountToken($accessToken);
+        return new static($secret, $clientId, $environment);
     }
 
-    public function exchangePublicToken()
+    public function validateKeys()
+    {
+        if (in_array(null, [$this->secret, $this->clientId, $this->environment])) {
+            throw PlaidException::missingKeys();
+        }
+
+        if (!in_array($this->environment, ['sandbox', 'production'])) {
+            throw PlaidException::invalidEnvironment();
+        }
+    }
+
+    public function getStripeToken($publicToken, $accountId)
+    {
+        $accessToken = $this->exchangePublicToken($publicToken);
+
+        return $this->createStripeBankAccountToken($accessToken, $accountId);
+    }
+
+    public function exchangePublicToken($publicToken)
     {
         $params = [
-            'secret' => $this->keys['secret'],
-            'client_id' => $this->keys['client_id'],
-            'public_token' => $this->keys['public_token'],
+            'secret' => $this->secret,
+            'client_id' => $this->clientId,
+            'public_token' => $publicToken,
         ];
 
         return $this->makeHttpRequest($this->exchangeUrl, $params)->access_token;
     }
 
-    public function createStripeBankAccountToken($accessToken)
+    public function createStripeBankAccountToken($accessToken, $accountId)
     {
         $btokParams = [
             'access_token' => $accessToken,
-            'secret' => $this->keys['secret'],
-            'client_id' => $this->keys['client_id'],
-            'account_id' => $this->keys['account_id'],
+            'secret' => $this->secret,
+            'client_id' => $this->clientId,
+            'account_id' => $accountId,
         ];
 
         return $this->makeHttpRequest($this->accountTokenUrl, $btokParams)->stripe_bank_account_token;
@@ -63,7 +84,6 @@ class StripePlaid
                 'body' => json_encode($params)
             ]);
         } catch (ClientException $e) {
-            dd($e);
             throw PlaidException::badRequest($e->getResponse()->getBody());
         } catch (ServerException $e) {
             throw PlaidException::badRequest($e->getResponse()->getBody());

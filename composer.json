@@ -24,6 +24,17 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.5"
+        "phpunit/phpunit": "^7.5",
+        "orchestra/testbench": "^3.8"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "AlexVargash\\LaravelStripePlaid\\StripePlaidServiceProvider"
+            ],
+            "aliases": {
+                "StripePlaid": "AlexVargash\\LaravelStripePlaid\\Facades\\StripePlaid"
+            }
+        }
     }
 }

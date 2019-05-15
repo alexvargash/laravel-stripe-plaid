@@ -11,13 +11,13 @@ class PlaidException extends Exception
         return new static($message);
     }
 
-    public static function missingKeys($key)
+    public static function missingKeys()
     {
-        return new static("The Plaid '{$key}' key is missing.");
+        return new static('{ "display_message": null, "error_code": "MISSING_KEYS", "error_message": "Missing Plaid credentials.", "error_type": "INVALID_INPUT" }');
     }
 
     public static function invalidEnvironment()
     {
-        return new static("The Plaid environment must be: 'sandbox' or 'production'.");
+        return new static('{ "display_message": null, "error_code": "INVALID_ENVIRONMENT", "error_message": "The environment must be: sandbox or production.", "error_type": "INVALID_INPUT" }');
     }
 }

@@ -44,9 +44,9 @@ class StripePlaid
      * @param  String  $environment
      * @return  AlexVargash\LaravelStripePlaid\StripePlaid
      */
-    public static function make($secret, $clientId, $environment)
+    public static function make($secret, $clientId, $environment, Client $client = null)
     {
-        return new static($secret, $clientId, $environment);
+        return new static($secret, $clientId, $environment, $client);
     }
 
     /**

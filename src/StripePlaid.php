@@ -10,13 +10,21 @@ use AlexVargash\LaravelStripePlaid\Exceptions\PlaidException;
 
 class StripePlaid
 {
+    private $client;
     private $secret;
     private $clientId;
-    private $client;
     private $environment;
     private $exchangeUrl;
     private $accountTokenUrl;
 
+    /**
+     * Set the global variables and validate the Plaid keys.
+     *
+     * @param  String  $secret
+     * @param  String  $clientId
+     * @param  String  $environment
+     * @param  GuzzleHttp\Client  $client
+     */
     public function __construct($secret = null, $clientId = null, $environment = null, Client $client = null)
     {
         $this->client = $client ?: new Client();
@@ -28,11 +36,23 @@ class StripePlaid
         $this->validateKeys();
     }
 
+    /**
+     * Create a new instance of the class StripePlaid.
+     *
+     * @param  String  $secret
+     * @param  String  $clientId
+     * @param  String  $environment
+     * @return  AlexVargash\LaravelStripePlaid\StripePlaid
+     */
     public static function make($secret, $clientId, $environment)
     {
         return new static($secret, $clientId, $environment);
     }
 
+    /**
+     * Review if any key is null and verify that the environment is one of the
+     * accepted by Plaid.
+     */
     public function validateKeys()
     {
         if (in_array(null, [$this->secret, $this->clientId, $this->environment])) {
@@ -44,6 +64,13 @@ class StripePlaid
         }
     }
 
+    /**
+     * Call the exchange token and create stripe token functions.
+     *
+     * @param  String  $publicToken
+     * @param  String  $accountId
+     * @return String
+     */
     public function getStripeToken($publicToken, $accountId)
     {
         $accessToken = $this->exchangePublicToken($publicToken);
@@ -51,6 +78,12 @@ class StripePlaid
         return $this->createStripeBankAccountToken($accessToken, $accountId);
     }
 
+    /**
+     * Exchange the public token for an access token.
+     *
+     * @param  String  $publicToken
+     * @return String  access_token
+     */
     public function exchangePublicToken($publicToken)
     {
         $params = [
@@ -62,6 +95,13 @@ class StripePlaid
         return $this->makeHttpRequest($this->exchangeUrl, $params)->access_token;
     }
 
+    /**
+     * Get the Stripe bank account token.
+     *
+     * @param  String  $accessToken
+     * @param  String  $accountId
+     * @return String  stripe_bank_account_token
+     */
     public function createStripeBankAccountToken($accessToken, $accountId)
     {
         $btokParams = [
@@ -74,6 +114,14 @@ class StripePlaid
         return $this->makeHttpRequest($this->accountTokenUrl, $btokParams)->stripe_bank_account_token;
     }
 
+    /**
+     * Create a POST request to the provided url with the corresponding
+     * parameters.
+     *
+     * @param  String  $url
+     * @param  String  $params
+     * @return json
+     */
     public function makeHttpRequest($url, $params)
     {
         try {

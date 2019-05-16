@@ -59,7 +59,7 @@ class StripePlaid
             throw PlaidException::missingKeys();
         }
 
-        if (!in_array($this->environment, ['sandbox', 'production'])) {
+        if (!in_array($this->environment, ['sandbox', 'development', 'production'])) {
             throw PlaidException::invalidEnvironment();
         }
     }

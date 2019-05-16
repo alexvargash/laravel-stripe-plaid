@@ -4,11 +4,9 @@ namespace AlexVargash\LaravelStripePlaid\Tests;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\Exception\RequestException;
 use AlexVargash\LaravelStripePlaid\StripePlaid;
 use AlexVargash\LaravelStripePlaid\Exceptions\PlaidException;
 
@@ -46,7 +44,7 @@ class StripePlaidTest extends TestCase
         $publicToken = 'public-sandbox-8765c42w-2nd1-8976-432s-x37m6kjd78cu';
 
         $mock = new MockHandler([
-            new Response(400, [], '{"display_message": null, "error_code": "INVALID_PUBLIC_TOKEN", "error_message": "provided public token is expired. Public tokens expire 30 minutes after creation at which point they can no longer be exchanged", "error_type": "INVALID_INPUT", "request_id": "wfn92ATB3EC83m5", "suggested_action": null }')
+            new Response(400, [], '{"display_message": null, "error_code": "INVALID_PUBLIC_TOKEN", "error_message": "provided public token is expired. Public tokens expire 30 minutes after creation at which point they can no longer be exchanged", "error_type": "INVALID_INPUT", "request_id": "wfn92ATB3EC83m5", "suggested_action": null }'),
         ]);
 
         $handler = HandlerStack::create($mock);
@@ -68,7 +66,7 @@ class StripePlaidTest extends TestCase
         $publicToken = 'public-sandbox-8765c42w-2nd1-8976-432s-x37m6kjd78cu';
 
         $mock = new MockHandler([
-            new Response(400, [], '{"display_message": null, "error_code": "INVALID_API_KEYS", "error_message": "invalid client_id or secret provided", "error_type": "INVALID_INPUT", "request_id": "Qo8n3fkIGVrFj0j", "suggested_action": null }')
+            new Response(400, [], '{"display_message": null, "error_code": "INVALID_API_KEYS", "error_message": "invalid client_id or secret provided", "error_type": "INVALID_INPUT", "request_id": "Qo8n3fkIGVrFj0j", "suggested_action": null }'),
         ]);
 
         $handler = HandlerStack::create($mock);
@@ -94,6 +92,4 @@ class StripePlaidTest extends TestCase
 
         $stripeToken = StripePlaid::make($secret, $clientId, $environment)->getStripeToken($publicToken, $accountId);
     }
-
-
 }

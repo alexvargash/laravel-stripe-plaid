@@ -1,11 +1,11 @@
 # Laravel Stripe Plaid
 
+[![Build Status](https://travis-ci.org/alexvargash/laravel-stripe-plaid.svg?branch=master)](https://travis-ci.org/alexvargash/laravel-stripe-plaid)
+[![StyleCI](https://github.styleci.io/repos/185878123/shield?branch=master)](https://github.styleci.io/repos/185878123)
+
 Simple package for creating a Stripe Bank Account Token from Plaid Link.
 
 ## Installation
-
-[![Build Status](https://travis-ci.org/alexvargash/laravel-stripe-plaid.svg?branch=master)](https://travis-ci.org/alexvargash/laravel-stripe-plaid)
-[![StyleCI](https://github.styleci.io/repos/185878123/shield?branch=master)](https://github.styleci.io/repos/185878123)
 
 This package requires Laravel 5.5 or higher.
 
@@ -106,6 +106,8 @@ $stripeToken = StripePlaid::getStripeToken($publicToken, $accountId);
 Alternatively the Plaid keys can be set prior token exchange, this is handy when multiple Plaid accounts are going to be used.
 
 ```php
+use AlexVargash\LaravelStripePlaid\StripePlaid;
+
 $secret = 'your_plaid_secret_key';
 $clientId = 'your_plaid_client_id';
 $environment = 'sandbox';

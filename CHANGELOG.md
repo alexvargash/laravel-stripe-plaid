@@ -1,16 +1,8 @@
 # Changelog
-All notable changes to this project will be documented in this file.
 
-## Unreleased
-- Version navigation 2.
-
-## 1.0.0 - 2017-06-20
+## 1.0.0 - 2019-05-16
 ### Added
-- New visual identity by [@tylerfortune8](https://github.com/tylerfortune8).
-- Version navigation.
+- Lravael facade support.
+- Created config file.
 
-### Changed
-- Start using "changelog" over "change log" since it's the common usage.
 
-### Removed
-- Section about "changelog" vs "CHANGELOG".

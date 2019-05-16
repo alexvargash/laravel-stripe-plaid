@@ -5,7 +5,6 @@ namespace AlexVargash\LaravelStripePlaid;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
-use AlexVargash\LaravelStripePlaid\Helpers\PlaidKeys;
 use AlexVargash\LaravelStripePlaid\Exceptions\PlaidException;
 
 class StripePlaid
@@ -20,9 +19,9 @@ class StripePlaid
     /**
      * Set the global variables and validate the Plaid keys.
      *
-     * @param  String  $secret
-     * @param  String  $clientId
-     * @param  String  $environment
+     * @param  string  $secret
+     * @param  string  $clientId
+     * @param  string  $environment
      * @param  GuzzleHttp\Client  $client
      */
     public function __construct($secret = null, $clientId = null, $environment = null, Client $client = null)
@@ -39,9 +38,9 @@ class StripePlaid
     /**
      * Create a new instance of the class StripePlaid.
      *
-     * @param  String  $secret
-     * @param  String  $clientId
-     * @param  String  $environment
+     * @param  string  $secret
+     * @param  string  $clientId
+     * @param  string  $environment
      * @return  AlexVargash\LaravelStripePlaid\StripePlaid
      */
     public static function make($secret, $clientId, $environment, Client $client = null)
@@ -59,7 +58,7 @@ class StripePlaid
             throw PlaidException::missingKeys();
         }
 
-        if (!in_array($this->environment, ['sandbox', 'development', 'production'])) {
+        if (! in_array($this->environment, ['sandbox', 'development', 'production'])) {
             throw PlaidException::invalidEnvironment();
         }
     }
@@ -67,9 +66,9 @@ class StripePlaid
     /**
      * Call the exchange token and create stripe token functions.
      *
-     * @param  String  $publicToken
-     * @param  String  $accountId
-     * @return String
+     * @param  string  $publicToken
+     * @param  string  $accountId
+     * @return string
      */
     public function getStripeToken($publicToken, $accountId)
     {
@@ -81,8 +80,8 @@ class StripePlaid
     /**
      * Exchange the public token for an access token.
      *
-     * @param  String  $publicToken
-     * @return String  access_token
+     * @param  string  $publicToken
+     * @return string  access_token
      */
     public function exchangePublicToken($publicToken)
     {
@@ -98,9 +97,9 @@ class StripePlaid
     /**
      * Get the Stripe bank account token.
      *
-     * @param  String  $accessToken
-     * @param  String  $accountId
-     * @return String  stripe_bank_account_token
+     * @param  string  $accessToken
+     * @param  string  $accountId
+     * @return string  stripe_bank_account_token
      */
     public function createStripeBankAccountToken($accessToken, $accountId)
     {
@@ -118,8 +117,8 @@ class StripePlaid
      * Create a POST request to the provided url with the corresponding
      * parameters.
      *
-     * @param  String  $url
-     * @param  String  $params
+     * @param  string  $url
+     * @param  string  $params
      * @return json
      */
     public function makeHttpRequest($url, $params)
@@ -129,7 +128,7 @@ class StripePlaid
                 'headers' => ['Content-Type' => 'application/json'],
                 'connect_timeout' => 30,
                 'timeout' => 80,
-                'body' => json_encode($params)
+                'body' => json_encode($params),
             ]);
         } catch (ClientException $e) {
             throw PlaidException::badRequest($e->getResponse()->getBody());

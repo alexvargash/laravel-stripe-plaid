@@ -9,7 +9,7 @@ class PlaidException extends Exception
     /**
      * Create an exception with the provided message from Plaid.
      *
-     * @param  String  $message
+     * @param  string  $message
      * @return AlexVargash\LaravelStripePlaid\Exceptions\PlaidException
      */
     public static function badRequest($message)

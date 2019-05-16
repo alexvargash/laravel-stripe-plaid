@@ -38,5 +38,5 @@ return [
     | https://plaid.com/docs/#glossary
     |
     */
-    'client_id' => env('PLAID_CLIENT_ID', '')
+    'client_id' => env('PLAID_CLIENT_ID', ''),
 ];

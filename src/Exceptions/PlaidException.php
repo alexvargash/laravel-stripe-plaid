@@ -34,6 +34,6 @@ class PlaidException extends Exception
      */
     public static function invalidEnvironment()
     {
-        return new static('{ "display_message": null, "error_code": "INVALID_ENVIRONMENT", "error_message": "The environment must be: sandbox or production.", "error_type": "INVALID_INPUT" }');
+        return new static('{ "display_message": null, "error_code": "INVALID_ENVIRONMENT", "error_message": "The environment must be: sandbox, development or production.", "error_type": "INVALID_INPUT" }');
     }
 }

@@ -90,7 +90,7 @@ class StripePlaidTest extends TestCase
         $publicToken = 'public-sandbox-8765c42w-2nd1-8976-432s-x37m6kjd78cu';
 
         $this->expectException(PlaidException::class);
-        $this->expectExceptionMessage('{ "display_message": null, "error_code": "INVALID_ENVIRONMENT", "error_message": "The environment must be: sandbox or production.", "error_type": "INVALID_INPUT" }');
+        $this->expectExceptionMessage('{ "display_message": null, "error_code": "INVALID_ENVIRONMENT", "error_message": "The environment must be: sandbox, development or production.", "error_type": "INVALID_INPUT" }');
 
         $stripeToken = StripePlaid::make($secret, $clientId, $environment)->getStripeToken($publicToken, $accountId);
     }

@@ -117,6 +117,21 @@ $publicToken = 'plaid_link_public_token';
 $stripeToken = StripePlaid::make($secret, $clientId, $environment)->getStripeToken($publicToken, $accountId);
 ```
 
+### Exceptions
+
+When an error occurs a `PlaidException` will be thrown. You can catch the `PlaidException` on the `Exceptions\Handler.php` file:
+
+```php
+public function render($request, Exception $exception)
+{
+    if ($exception instanceof \AlexVargash\LaravelStripePlaid\Exceptions\PlaidException) {
+        // Manage exception here ...
+    }
+
+    return parent::render($request, $exception);
+}
+```
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 

@@ -9,6 +9,10 @@ use AlexVargash\LaravelStripePlaid\Exceptions\PlaidException;
 
 class StripePlaid
 {
+    public const EXCHANGE_URL = 'item/public_token/exchange';
+    public const ACCOUNT_TOKEN_URL = 'processor/stripe/bank_account_token/create';
+    public const LINK_TOKEN_URL = 'link/token/create';
+
     private $client;
     private $secret;
     private $clientId;
@@ -26,12 +30,12 @@ class StripePlaid
      */
     public function __construct($secret = null, $clientId = null, $environment = null, Client $client = null)
     {
-        $this->client = $client ?: new Client();
         $this->secret = $secret ?: config('stripe-plaid.secret');
         $this->clientId = $clientId ?: config('stripe-plaid.client_id');
         $this->environment = $environment ?: config('stripe-plaid.environment');
-        $this->exchangeUrl = "https://{$this->environment}.plaid.com/item/public_token/exchange";
-        $this->accountTokenUrl = "https://{$this->environment}.plaid.com/processor/stripe/bank_account_token/create";
+        $this->client = $client ?: new Client([
+             'base_uri' => "https://{$this->environment}.plaid.com/", 
+        ]);
         $this->validateKeys();
     }
 
@@ -63,6 +67,22 @@ class StripePlaid
         }
     }
 
+    public function createLinkToken($clientUserId, $clientName, $products, $language, $countryCodes)
+    {
+        $params = [
+            'client_id'     => $this->clientId,
+            'client_name'   => $clientName ?: config('stripe-plaid.client_name'),
+            'language'      => $language ?: config('stripe-plaid.language'),
+            'secret'        => $this->secret,
+            'country_codes' => $countryCodes ?: config('stripe-plaid.country_codes'),
+            'products'      => $products ?: config('stripe-plaid.products'),
+            'user'          => [
+                'client_user_id' => $clientUserId,
+            ],
+        ];
+
+        return $this->makeHttpRequest(self::LINK_TOKEN_URL, $params)->link_token;
+    }
     /**
      * Call the exchange token and create stripe token functions.
      *
@@ -91,7 +111,7 @@ class StripePlaid
             'public_token' => $publicToken,
         ];
 
-        return $this->makeHttpRequest($this->exchangeUrl, $params)->access_token;
+        return $this->makeHttpRequest(self::EXCHANGE_URL, $params)->access_token;
     }
 
     /**
@@ -110,7 +130,7 @@ class StripePlaid
             'account_id' => $accountId,
         ];
 
-        return $this->makeHttpRequest($this->accountTokenUrl, $btokParams)->stripe_bank_account_token;
+        return $this->makeHttpRequest(self::ACCOUNT_TOKEN_URL, $btokParams)->stripe_bank_account_token;
     }
 
     /**

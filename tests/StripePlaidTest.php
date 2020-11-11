@@ -5,8 +5,8 @@ namespace AlexVargash\LaravelStripePlaid\Tests;
 use AlexVargash\LaravelStripePlaid\Exceptions\PlaidException;
 use AlexVargash\LaravelStripePlaid\StripePlaid;
 use GuzzleHttp\Client;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 

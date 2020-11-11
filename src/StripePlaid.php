@@ -7,7 +7,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 
-
 class StripePlaid
 {
     public const EXCHANGE_URL = '/item/public_token/exchange';

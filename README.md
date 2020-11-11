@@ -135,19 +135,17 @@ PLAID_CLIENT_NAME=your_app_name
 ```
 Then, you need to create the `link_token` which is required as a parameter when initializing Link. Once Link has been initialized, it returns a `public_token`.
 
-The `createLinkToken` function accept the parameters `$clientName, $products, $language, $countryCodes` but these will be consumed from
-the config file `config/stripe-plaid.php` if aren't passed through.
+To create the public token use `createLinkToken`, this function needs the `$clientUserId` (you can find more information [here](https://plaid.com/docs/api/tokens/#token-endpoints)), optionally this fuction accepts `$clientName, $products, $language, $countryCodes` if you don't provide these values the values on `config/stripe-plaid.php` config file will be used.
 
 ```php
 use AlexVargash\LaravelStripePlaid\StripePlaid;
 
-$clientUserId = 'your_end_user_id';
+$clientUserId = 'client_user_id';
 
 $stripePlaid = new StripePlaid();
 $linkToken   = $stripePlaid->createLinkToken($clientUserId);
 ```
-
-Now exchange the `public_token` and `account_id` that are returned by [Plaid Link](https://plaid.com/docs/stripe/#step3).
+Now you can use the value of `$linkToken` on [Link Web](https://plaid.com/docs/link/link-token-migration-guide/) to get the `public_token` and `account_id` values.
 
 ```php
 use AlexVargash\LaravelStripePlaid\StripePlaid;
@@ -213,6 +211,9 @@ public function render($request, Exception $exception)
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
+
+## Contributors
+[<img src="https://pbs.twimg.com/profile_images/950767267033133057/4DNt-mOz_400x400.jpg" alt="Rogelio Bazan" width="50" height="50" />](https://twitter.com/rogeliobazh)
 
 ## License
 [MIT](./LICENSE.md)

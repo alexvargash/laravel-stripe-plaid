@@ -9,16 +9,14 @@ use AlexVargash\LaravelStripePlaid\Exceptions\PlaidException;
 
 class StripePlaid
 {
-    public const EXCHANGE_URL = 'item/public_token/exchange';
-    public const ACCOUNT_TOKEN_URL = 'processor/stripe/bank_account_token/create';
-    public const LINK_TOKEN_URL = 'link/token/create';
+    public const EXCHANGE_URL = '/item/public_token/exchange';
+    public const ACCOUNT_TOKEN_URL = '/processor/stripe/bank_account_token/create';
+    public const LINK_TOKEN_URL = '/link/token/create';
 
     private $client;
     private $secret;
     private $clientId;
     private $environment;
-    private $exchangeUrl;
-    private $accountTokenUrl;
 
     /**
      * Set the global variables and validate the Plaid keys.
@@ -34,7 +32,7 @@ class StripePlaid
         $this->clientId = $clientId ?: config('stripe-plaid.client_id');
         $this->environment = $environment ?: config('stripe-plaid.environment');
         $this->client = $client ?: new Client([
-             'base_uri' => "https://{$this->environment}.plaid.com/", 
+             'base_uri' => "https://{$this->environment}.plaid.com",
         ]);
         $this->validateKeys();
     }
@@ -67,7 +65,17 @@ class StripePlaid
         }
     }
 
-    public function createLinkToken($clientUserId, $clientName, $products, $language, $countryCodes)
+    /**
+     * Create a new Plaid link token
+     *
+     * @param  string $clientUserId
+     * @param  string $clientName
+     * @param  array  $products
+     * @param  string $language
+     * @param  array  $countryCodes
+     * @return string link_token
+     */
+    public function createLinkToken ($clientUserId, $clientName = null, $products = null, $language = null, $countryCodes = null)
     {
         $params = [
             'client_id'     => $this->clientId,
@@ -83,6 +91,7 @@ class StripePlaid
 
         return $this->makeHttpRequest(self::LINK_TOKEN_URL, $params)->link_token;
     }
+
     /**
      * Call the exchange token and create stripe token functions.
      *

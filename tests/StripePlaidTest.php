@@ -35,6 +35,30 @@ class StripePlaidTest extends TestCase
     }
 
     /** @test */
+    public function it_returns_a_link_token()
+    {
+        $environment = 'sandbox';
+        $clientId = '1dd5243s03634t228712ss23';
+        $secret = '5c74834hs3iag5as9884s1c8g9987d';
+        $clientUserId = 'accunt_aAdsDrJBeKvN43N9';
+        $clientName = 'My App';
+        $products = ['auth', 'transactions'];
+        $language = 'en';
+        $countryCodes =  ['US'];
+
+        $mock = new MockHandler([
+            new Response(200, [], '{ "link_token": "link-sandbox-840204-193734", "expiration": "2020-03-27T12:56:34" }'),
+        ]);
+
+        $handler = HandlerStack::create($mock);
+        $client = new Client(['handler' => $handler]);
+
+        $linkToken = StripePlaid::make($secret, $clientId, $environment, $client)->createLinkToken($clientUserId, $clientName, $products, $language, $countryCodes);
+
+        $this->assertSame('link-sandbox-840204-193734', $linkToken);
+    }
+
+    /** @test */
     public function the_public_token_should_not_be_expired()
     {
         $environment = 'sandbox';

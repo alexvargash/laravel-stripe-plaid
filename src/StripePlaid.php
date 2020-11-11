@@ -2,10 +2,11 @@
 
 namespace AlexVargash\LaravelStripePlaid;
 
+use AlexVargash\LaravelStripePlaid\Exceptions\PlaidException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
-use AlexVargash\LaravelStripePlaid\Exceptions\PlaidException;
+
 
 class StripePlaid
 {
@@ -32,7 +33,7 @@ class StripePlaid
         $this->clientId = $clientId ?: config('stripe-plaid.client_id');
         $this->environment = $environment ?: config('stripe-plaid.environment');
         $this->client = $client ?: new Client([
-             'base_uri' => "https://{$this->environment}.plaid.com",
+            'base_uri' => "https://{$this->environment}.plaid.com",
         ]);
         $this->validateKeys();
     }
@@ -66,7 +67,7 @@ class StripePlaid
     }
 
     /**
-     * Create a new Plaid link token
+     * Create a new Plaid link token.
      *
      * @param  string $clientUserId
      * @param  string $clientName
@@ -75,7 +76,7 @@ class StripePlaid
      * @param  array  $countryCodes
      * @return string link_token
      */
-    public function createLinkToken ($clientUserId, $clientName = null, $products = null, $language = null, $countryCodes = null)
+    public function createLinkToken($clientUserId, $clientName = null, $products = null, $language = null, $countryCodes = null)
     {
         $params = [
             'client_id'     => $this->clientId,

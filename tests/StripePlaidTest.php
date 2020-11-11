@@ -2,13 +2,13 @@
 
 namespace AlexVargash\LaravelStripePlaid\Tests;
 
+use AlexVargash\LaravelStripePlaid\Exceptions\PlaidException;
+use AlexVargash\LaravelStripePlaid\StripePlaid;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
-use GuzzleHttp\Handler\MockHandler;
-use AlexVargash\LaravelStripePlaid\StripePlaid;
-use AlexVargash\LaravelStripePlaid\Exceptions\PlaidException;
 
 class StripePlaidTest extends TestCase
 {
@@ -44,7 +44,7 @@ class StripePlaidTest extends TestCase
         $clientName = 'My App';
         $products = ['auth', 'transactions'];
         $language = 'en';
-        $countryCodes =  ['US'];
+        $countryCodes = ['US'];
 
         $mock = new MockHandler([
             new Response(200, [], '{ "link_token": "link-sandbox-840204-193734", "expiration": "2020-03-27T12:56:34" }'),

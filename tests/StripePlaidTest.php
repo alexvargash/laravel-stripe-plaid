@@ -2,13 +2,13 @@
 
 namespace AlexVargash\LaravelStripePlaid\Tests;
 
+use AlexVargash\LaravelStripePlaid\Exceptions\PlaidException;
+use AlexVargash\LaravelStripePlaid\StripePlaid;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
-use GuzzleHttp\Handler\MockHandler;
-use AlexVargash\LaravelStripePlaid\StripePlaid;
-use AlexVargash\LaravelStripePlaid\Exceptions\PlaidException;
 
 class StripePlaidTest extends TestCase
 {
@@ -32,6 +32,30 @@ class StripePlaidTest extends TestCase
         $stripeToken = StripePlaid::make($secret, $clientId, $environment, $client)->getStripeToken($publicToken, $accountId);
 
         $this->assertSame('btok_6IJuhsDmxnxDFFxYKGEnxc4a', $stripeToken);
+    }
+
+    /** @test */
+    public function it_returns_a_link_token()
+    {
+        $environment = 'sandbox';
+        $clientId = '1dd5243s03634t228712ss23';
+        $secret = '5c74834hs3iag5as9884s1c8g9987d';
+        $clientUserId = 'accunt_aAdsDrJBeKvN43N9';
+        $clientName = 'My App';
+        $products = ['auth', 'transactions'];
+        $language = 'en';
+        $countryCodes = ['US'];
+
+        $mock = new MockHandler([
+            new Response(200, [], '{ "link_token": "link-sandbox-840204-193734", "expiration": "2020-03-27T12:56:34" }'),
+        ]);
+
+        $handler = HandlerStack::create($mock);
+        $client = new Client(['handler' => $handler]);
+
+        $linkToken = StripePlaid::make($secret, $clientId, $environment, $client)->createLinkToken($clientUserId, $clientName, $products, $language, $countryCodes);
+
+        $this->assertSame('link-sandbox-840204-193734', $linkToken);
     }
 
     /** @test */
